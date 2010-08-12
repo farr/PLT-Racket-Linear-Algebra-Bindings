@@ -55,19 +55,25 @@ code below. |#
 ;; lib-blas : (listof string)
 ;;
 ;; Possible names for the BLAS library
+;; 
+;; libcblas.so.3gf is apparently required for Debian.  Thanks to
+;; Viktor Winschel for pointing this out.
 (define lib-blas
   (case (system-type)
     [(macosx) '("libBLAS")]
-    [(unix)  '("libcblas" "libgslcblas")]
+    [(unix)  '("libcblas" "libgslcblas" "libcblas.so.3gf")]
     (else '("libblas" "libcblas"))))
 
 ;; lib-lapack : (listof string)
 ;;
 ;; Possible names for the LAPACK library
+;;
+;; liblapack.so.3gf is apparently required for Debian.  Thanks to
+;; Viktor Winschel for pointing this out.
 (define lib-lapack
   (case (system-type)
     [(macosx) '("libLAPACK")]
-    [(unix)  '("liblapack")]
+    [(unix)  '("liblapack" "liblapack.so.3gf")]
     (else '("liblapack"))))
 
 (define (string-empty? s)

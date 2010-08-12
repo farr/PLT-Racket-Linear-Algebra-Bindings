@@ -31,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   (define can-be-loaded-with 'all)
   
   (define release-notes
-    '("Updated linux paths to add /usr/libsse2 per bug report #196."))
+    '("Updated paths for special Debian BLAS and LAPACK libraries."))
   
   (define repositories '("4.x"))
   

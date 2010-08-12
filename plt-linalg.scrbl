@@ -16,8 +16,9 @@ The library makes a reasonable effort to find the BLAS and LAPACK
 libraries that are installed on your system, but this can fail if they
 are in a non-standard place.  If so, you should modify the search
 paths in @filepath{blas-lapack.ss}; if you do, please contact
-@link["mailto:farr@mit.edu"]{Will M. Farr} with the updated search
-paths so they can be added to the library and benefit other users.
+@link["mailto:w-farr@northwestern.edu"]{Will M. Farr} with the updated
+search paths so they can be added to the library and benefit other
+users.
 
 This library uses the older, reference implementation of
 @link["http://srfi.schemers.org/srfi-42/"]{SRFI-42}, which you can
@@ -34,7 +35,7 @@ M. Farr}.
 
 @section{Vectors}
 
-@defmodule[(planet wmfarr/plt-linalg:1:11/vector)]
+@defmodule[(planet wmfarr/plt-linalg:1:12/vector)]
 
 The @filepath{plt-linalg.plt} package represents vectors as
 f64vectors.
@@ -83,7 +84,7 @@ Computes the dot product of @scheme[v1] and @scheme[v2].}
 
 @section{Matrices}
 
-@defmodule[(planet wmfarr/plt-linalg:1:11/matrix)]
+@defmodule[(planet wmfarr/plt-linalg:1:12/matrix)]
 
 A matrix is represented in the @filepath{plt-linalg.plt} package by a
 special datastructure: @scheme[(make-matrix rows cols init)].  It

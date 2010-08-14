@@ -1,4 +1,4 @@
-#| info.ss: Information file for plt-linalg package.
+#| info.rkt: Information file for plt-linalg package.
 Copyright (C) 2007 Will M. Farr
 
 This program is free software; you can redistribute it and/or modify it
@@ -36,6 +36,5 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   (define repositories '("4.x"))
   
   (define scribblings '(("plt-linalg.scrbl" (multi-page))))
-  
-  (define compile-omit-paths
-    '("_darcs")))
+
+  (define required-core-version "5.0"))

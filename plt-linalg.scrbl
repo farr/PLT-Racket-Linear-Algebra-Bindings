@@ -30,12 +30,12 @@ The @filepath{plt-linalg.plt} package is released under the
 @link["http://www.gnu.org/licenses/old-licenses/gpl-2.0.html"]{GPL
 Version 2} (see the file @filepath{COPYING} in the collection
 directory for more information).  If you find any bugs, or have
-feature requests, please contact @link["mailto:farr@mit.edu"]{Will
+feature requests, please contact @link["w-farr@northwestern.edu"]{Will
 M. Farr}.
 
 @section{Vectors}
 
-@defmodule[(planet wmfarr/plt-linalg:1:12/vector)]
+@defmodule[(planet wmfarr/plt-linalg:1:13/vector)]
 
 The @filepath{plt-linalg.plt} package represents vectors as
 f64vectors.
@@ -84,7 +84,7 @@ Computes the dot product of @scheme[v1] and @scheme[v2].}
 
 @section{Matrices}
 
-@defmodule[(planet wmfarr/plt-linalg:1:12/matrix)]
+@defmodule[(planet wmfarr/plt-linalg:1:13/matrix)]
 
 A matrix is represented in the @filepath{plt-linalg.plt} package by a
 special datastructure: @scheme[(make-matrix rows cols init)].  It
@@ -225,10 +225,3 @@ matrix whose elements are those of @scheme[m] scaled by @scheme[x].}
 
 Solves simultaneously many linear systems of the form @scheme[m]*x =
 @scheme[b] for x.}
-
-@defproc[(matrix-solve-least-squares (m matrix?) (b
-(matrix-row-vector-compatible/c m)))
-         (matrix-col-vector-compatible/c m)]{
-
-Solves @scheme[m]*x = @scheme[b] for x in a least-squares sense using
-SVD.}

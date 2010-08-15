@@ -1,6 +1,6 @@
-#lang scheme
+#lang racket
 
-#|  vector.ss: f64vectors in linear algebra.
+#|  vector.rkt: f64vectors in linear algebra.
     Copyright (C) 2007 Will M. Farr <farr@mit.edu>
 
     This program is free software; you can redistribute it and/or modify

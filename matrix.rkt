@@ -147,7 +147,7 @@
                           (m2 (and/c matrix?
                                      (matrix-multiplication-compatible/c m1))))
                          matrix?))
- (matrix-solve-least-squares
+ #;(matrix-solve-least-squares
   (->r ((m matrix?)
         (b (and/c f64vector?
                   (matrix-row-vector-compatible/c m))))
@@ -422,14 +422,15 @@
                      (_ptr o _int)
                      (work : (_ptr o _double))
                      ((_ptr i _int) = -1)
-                     (_ptr o _int)
+                     (iwork : (_ptr o _int))
                      (_ptr o _int) ->
                      _void ->
-                     (inexact->exact (round work)))))
+                     (values (inexact->exact (round work))
+                             iwork))))
 
 (define dgelsd/lwork
   (get-ffi-obj 'dgelsd_ *lapack*
-               (_fun (m v lwork) ::
+               (_fun (m v lwork iwork) ::
                      ((_ptr i _int) = (matrix-rows m))
                      ((_ptr i _int) = (matrix-cols m))
                      ((_ptr i _int) = 1)
@@ -438,24 +439,27 @@
                      (b : _f64vector = (let ((nb (max (matrix-rows m) (matrix-cols m)))
                                              (nv (f64vector-length v)))
                                          (f64vector-of-length-ec nb (:range i nb)
-                                           (if (< i nv)
-                                               (f64vector-ref v i)
-                                               0.0))))
+                                                                 (if (< i nv)
+                                                                     (f64vector-ref v i)
+                                                                     0.0))))
                      ((_ptr i _int) = (max (matrix-rows m) (matrix-cols m)))
                      (_f64vector o (min (matrix-rows m) (matrix-cols m)))
-                     ((_ptr i _double) = 1e-8)
+                     ((_ptr i _double) = -1.0)
                      (_ptr o _int)
                      (_f64vector o lwork)
                      ((_ptr i _int) = lwork)
-                     (_u64vector o lwork)
+                     (_u64vector o iwork)
                      (_ptr o _int) ->
                      _void ->
                      (f64vector-of-length-ec (matrix-cols m) (:range i (matrix-cols m))
-                       (f64vector-ref b i)))))
-
+                                             (f64vector-ref b i)))))
+;; Some sort of segfault---removed from the provided functions until fixed. 
 (define (matrix-solve-least-squares m b)
-  (let ((lwork (dgelsd-lwork m b)))
-    (dgelsd/lwork m b lwork)))
+  (let-values (((lwork iwork) (dgelsd-lwork m b)))
+    (printf "Found lwork, iwork: ~a, ~a~%" lwork iwork)
+    (let ((answer (dgelsd/lwork m b lwork lwork))) ; The final lwork should be iwork
+      (printf "Returned from dgelsd/lwork.~%")
+      answer)))
 
 (define (matrix-identity n)
   (let ((m (my-make-matrix n n 0.0)))

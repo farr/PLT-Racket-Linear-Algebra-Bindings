@@ -1,6 +1,6 @@
-#lang scheme
+#lang racket
 
-#| all.ss: Export all procedures from the plt-linalg library.
+#| all.rkt: Export all procedures from the plt-linalg library.
 Copyright (C) 2007 Will M. Farr
 
 This program is free software; you can redistribute it and/or modify it
@@ -19,7 +19,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 |# 
 
-(require "matrix.ss" "vector.ss")
+(require "matrix.rkt" "vector.rkt")
 
-(provide (all-from-out "matrix.ss")
-         (all-from-out "vector.ss"))
+(provide (all-from-out "matrix.rkt")
+         (all-from-out "vector.rkt"))

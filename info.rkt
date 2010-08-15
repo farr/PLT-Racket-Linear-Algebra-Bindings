@@ -24,7 +24,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   (define blurb
     (list "Simple linear algebra operations in double-precision for PLT Scheme.  Uses LAPACK and BLAS.  Contains bindings for all single- and double-precision BLAS operations."))
   
-  (define primary-file "all.ss")
+  (define primary-file "all.rkt")
   
   (define categories '(scientific datastructures))
   

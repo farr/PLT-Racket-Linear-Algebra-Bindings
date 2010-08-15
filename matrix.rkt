@@ -25,7 +25,7 @@
          (except-in (lib "42ref.ss" "srfi") :)
          (except-in (planet "srfi-4-comprehensions.ss" ("wmfarr" "srfi-4-comprehensions.plt")) :)
          "blas-lapack.ss"
-         "vector.ss"
+         "vector.rkt"
          racket/fixnum
          racket/flonum)
 

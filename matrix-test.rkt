@@ -120,4 +120,17 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         (check-true
          (for/and ((xseq mseq)
                    (x (in-matrix m)))
-           (= xseq x))))))))
+           (= xseq x))))))
+   (test-case
+    "eigensystem on identity matrix"
+    (let ((id (matrix 3 3 1 0 0 0 1 0 0 0 1)))
+      (let-values (((er ei id2 id3)
+                    (eigensystem id)))
+        (for/and ((i (in-range 3)))
+          (check-close? 1e-10 (f64vector-ref er i) 1.0)
+          (check-close? 1e-10 (f64vector-ref ei i) 0.0))
+        (for/and ((x (in-matrix id))
+                  (x2 (in-matrix id2))
+                  (x3 (in-matrix id3)))
+          (check-close? 1e-10 x x2)
+          (check-close? 1e-10 x x3)))))))

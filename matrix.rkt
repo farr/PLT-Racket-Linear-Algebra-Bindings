@@ -151,7 +151,9 @@
   (->r ((m matrix?)
         (b (and/c f64vector?
                   (matrix-row-vector-compatible/c m))))
-       (and/c f64vector? (matrix-col-vector-compatible/c m)))))
+       (and/c f64vector? (matrix-col-vector-compatible/c m))))
+ (eigensystem 
+  (->/c matrix-square/c (values f64vector? f64vector? matrix? matrix?))))
 
 (unsafe!)
 
@@ -537,5 +539,51 @@
                       #t
                       #t
                       (nrows ncols (if (fx>= ii nrows) 0 ii) (if (fx>= ii nrows) (add1 j) j)))))))))
+
+(define dgeev-lwork
+  (get-ffi-obj 
+   'dgeev_ *lapack*
+   (_fun (m) ::
+         (_string = "N")
+         (_string = "N")
+         ((_ptr i _int) = (matrix-rows m))
+         (_matrix = m)
+         ((_ptr i _int) = (matrix-rows m))
+         (_ptr o _double)
+         (_ptr o _double)
+         (_ptr o _double)
+         ((_ptr i _int) = 1)
+         (_ptr o _double)
+         ((_ptr i _int) = 1)
+         (work : (_ptr o _double))
+         ((_ptr i _int) = -1)
+         (_ptr o _int) -> 
+         _void -> 
+         (inexact->exact (round work)))))
+
+(define dgeev
+  (get-ffi-obj
+   'dgeev_ *lapack*
+   (_fun (m lwork) :: 
+         (_string = "V")
+         (_string = "V")
+         ((_ptr i _int) = (matrix-rows m))
+         (_matrix = (matrix-copy m))
+         ((_ptr i _int) = (matrix-rows m))
+         (wr : (_f64vector o (matrix-rows m)))
+         (wi : (_f64vector o (matrix-rows m)))
+         (vl : _matrix = (matrix-copy m))
+         ((_ptr i _int) = (matrix-rows m))
+         (vr : _matrix = (matrix-copy m))
+         ((_ptr i _int) = (matrix-rows m))
+         (_f64vector o lwork)
+         ((_ptr i _int) = lwork)
+         (_ptr o _int) -> 
+         _void -> 
+         (values wr wi vl vr))))
+
+(define (eigensystem m)
+  (let ((lwork (dgeev-lwork m)))
+    (dgeev m lwork)))
 
 (define-unsafer matrix-unsafe!)

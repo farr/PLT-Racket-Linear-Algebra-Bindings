@@ -1,6 +1,6 @@
-#lang scheme
+#lang racket
 
-#|  matrix.ss: Matrices and matrix operations using BLAS and LAPACK
+#|  matrix.rkt: Matrices and matrix operations using BLAS and LAPACK
     Copyright (C) 2007 Will M. Farr <farr@mit.edu>
 
     This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,9 @@
          (except-in (lib "42ref.ss" "srfi") :)
          (except-in (planet "srfi-4-comprehensions.ss" ("wmfarr" "srfi-4-comprehensions.plt")) :)
          "blas-lapack.ss"
-         "vector.ss")
+         "vector.ss"
+         racket/fixnum
+         racket/flonum)
 
 (define (list/length/c n)
   (flat-named-contract
@@ -82,7 +84,7 @@
 (provide matrix? matrix-multiplication-compatible/c matrix-valid-row-index/c
          matrix-valid-col-index/c matrix-square/c matrix-same-dimensions/c
          matrix-col-vector-compatible/c matrix-row-vector-compatible/c
-         matrix-ec :matrix
+         matrix-ec :matrix in-matrix
          _matrix
          struct:matrix
          (rename-out (matrix s:matrix))
@@ -491,4 +493,45 @@
 
 (define ptr->matrix make-matrix)
 (provide* (unsafe ptr->matrix))
+
+(define (in-matrix* m)
+  (let ((nrows (matrix-rows m))
+        (ncols (matrix-cols m)))
+    (make-do-sequence
+     (lambda ()
+       (values (lambda (ij) (matrix-ref m (car ij) (cdr ij)))
+               (lambda (ij)
+                 (match ij
+                   ((cons i j)
+                    (let ((ii (add1 i)))
+                      (if (< ii nrows)
+                          (cons ii j)
+                          (cons 0 (add1 j)))))))
+               (cons 0 0)
+               (lambda (ij) 
+                 (match ij
+                   ((cons i j)
+                    (not (>= j ncols)))))
+               (lambda args #t)
+               (lambda args #t))))))
+
+(define-sequence-syntax in-matrix
+  (lambda () (syntax in-matrix*))
+  (lambda (stx)
+    (syntax-case stx ()
+      (((x-id) (in-matrix mexpr))
+       (syntax/loc stx
+         ((m) (:do-in (((m) mexpr))
+                      #t
+                      ((nrows (matrix-rows m))
+                       (ncols (matrix-cols m))
+                       (i 0)
+                       (j 0))
+                      (fx< j ncols)
+                      (((x-id) (matrix-ref m i j))
+                       ((ii) (add1 i)))
+                      #t
+                      #t
+                      (nrows ncols (if (fx>= ii nrows) 0 ii) (if (fx>= ii nrows) (add1 j) j)))))))))
+
 (define-unsafer matrix-unsafe!)

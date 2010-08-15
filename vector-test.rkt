@@ -18,7 +18,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 |#
 
-(require (planet "test.ss" ("schematics" "schemeunit.plt" 2))
+(require schemeunit
          "vector.ss"
          (lib "math.ss")
          (planet "srfi-4-comprehensions.ss" ("wmfarr" "srfi-4-comprehensions.plt" 1)))

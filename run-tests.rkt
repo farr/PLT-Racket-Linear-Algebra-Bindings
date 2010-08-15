@@ -19,12 +19,12 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 |# 
 
-(require (planet "text-ui.ss" ("schematics" "schemeunit.plt" 2))
-         (planet "test.ss" ("schematics" "schemeunit.plt" 2))
+(require schemeunit 
+         schemeunit/text-ui
          "matrix-test.ss" "vector-test.ss")
 
 (define all-tests (test-suite
                    "all tests"
                    matrix-test-suite vector-test-suite))
 
-(exit (test/text-ui all-tests 'verbose))
+(exit (run-tests all-tests 'verbose))

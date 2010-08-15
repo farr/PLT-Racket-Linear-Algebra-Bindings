@@ -20,8 +20,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 |#
 
 
-(require (planet "test.ss" ("schematics" "schemeunit.plt" 2))
-         (planet "text-ui.ss" ("schematics" "schemeunit.plt" 2))
+(require schemeunit
          (lib "42ref.ss" "srfi")
          (lib "4.ss" "srfi")
          "matrix.ss")
@@ -108,4 +107,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     ":matrix test"
     (let ((m (matrix-ec 3 3 (:range i 3) (:range j 3) (+ i j))))
       (let ((elts (list-ec (:matrix x m) x)))
-        (check-equal? elts (list 0.0 1.0 2.0 1.0 2.0 3.0 2.0 3.0 4.0)))))))
+        (check-equal? elts (list 0.0 1.0 2.0 1.0 2.0 3.0 2.0 3.0 4.0)))))
+   (test-case
+    "in-matrix test"
+    (let ((m (matrix 3 2 
+                     1 2 3
+                     4 5 6)))
+      (let ((mseq (in-matrix m)))
+        (check-true
+         (for/and ((xseq mseq)
+                   (x (in-matrix m)))
+           (= xseq x))))))))

@@ -31,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
   (define can-be-loaded-with 'all)
   
   (define release-notes
-    '("Updated paths for special Debian BLAS and LAPACK libraries."))
+    '("Added eigensystem to matrix.rkt, disabled matrix-solve-least-squares due to segfault."))
   
   (define repositories '("4.x"))
   

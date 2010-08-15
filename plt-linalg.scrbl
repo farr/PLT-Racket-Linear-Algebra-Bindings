@@ -225,3 +225,22 @@ matrix whose elements are those of @scheme[m] scaled by @scheme[x].}
 
 Solves simultaneously many linear systems of the form @scheme[m]*x =
 @scheme[b] for x.}
+
+@subsection{Eigenvalues and Eigenvectors}
+
+@defproc[(eigensystem (m matrix-square/c))
+         (values f64vector? f64vector? matrix? matrix?)]{
+
+Returns the eigenvalues and eigenvectors for the matrix @scheme[m].
+The first two @scheme[f64vector]s are the real and imaginary parts of
+the eigenvalues (see @scheme[eigenvalues->vector] for a procedure that
+gives more convenient access to these values); the columns of the two
+matrices are the left- and right-eigenvectors, with complex elements
+stored as in the output of the LAPACK dgeev subroutine.}
+
+@defproc[(eigenvalues->vector (er f64vector?) (ei f64vector?)) (vectorof number?)]{
+
+Given the real and imaginary parts of the eigenvalues, @scheme[er] and
+@scheme[ei], returns the eigenvalues as a @scheme[vector] of complex
+numbers.  If an element of @scheme[ei] is exactly @scheme[0.0], the
+corresponding element of the result is @scheme[real?].}

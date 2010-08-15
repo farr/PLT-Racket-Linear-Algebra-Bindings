@@ -147,7 +147,7 @@
                           (m2 (and/c matrix?
                                      (matrix-multiplication-compatible/c m1))))
                          matrix?))
- #;(matrix-solve-least-squares
+ (matrix-solve-least-squares
   (->r ((m matrix?)
         (b (and/c f64vector?
                   (matrix-row-vector-compatible/c m))))
@@ -459,7 +459,9 @@
                                              (f64vector-ref b i)))))
 ;; Some sort of segfault---removed from the provided functions until fixed. 
 (define (matrix-solve-least-squares m b)
-  (let-values (((lwork iwork) (dgelsd-lwork m b)))
+  (error 'matrix-solve-least-squares "there is a hard-to-find segfault in matrix-solve-least-squares; contact w-farr@northwestern.edu and ask him to track it down if you *really* need access to least-squares solvers")
+
+  #;(let-values (((lwork iwork) (dgelsd-lwork m b)))
     (printf "Found lwork, iwork: ~a, ~a~%" lwork iwork)
     (let ((answer (dgelsd/lwork m b lwork lwork))) ; The final lwork should be iwork
       (printf "Returned from dgelsd/lwork.~%")

@@ -153,7 +153,9 @@
                   (matrix-row-vector-compatible/c m))))
        (and/c f64vector? (matrix-col-vector-compatible/c m))))
  (eigensystem 
-  (->/c matrix-square/c (values f64vector? f64vector? matrix? matrix?))))
+  (->/c matrix-square/c (values f64vector? f64vector? matrix? matrix?)))
+ (eigenvalues->vector
+  (->/c f64vector? f64vector? (vectorof number?))))
 
 (unsafe!)
 
@@ -585,5 +587,12 @@
 (define (eigensystem m)
   (let ((lwork (dgeev-lwork m)))
     (dgeev m lwork)))
+
+(define (eigenvalues->vector er ei)
+  (list->vector
+   (for/list ((i (in-range (f64vector-length er))))
+     (if (= 0.0 (f64vector-ref ei i))
+         (f64vector-ref er i)
+         (make-rectangular (f64vector-ref er i) (f64vector-ref ei i))))))
 
 (define-unsafer matrix-unsafe!)

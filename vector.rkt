@@ -21,12 +21,11 @@
 (require (lib "foreign.ss")
          (except-in (lib "contract.ss") ->)
          "blas-lapack.ss"
-         (rename-in (lib "contract.ss") (-> ->/c))
-         (lib "4.ss" "srfi"))
+         (rename-in (lib "contract.ss") (-> ->/c)))
 
 (unsafe!)
 
-(provide (all-from-out (lib "4.ss" "srfi")) f64vector-same-length/c)
+(provide f64vector-same-length/c)
 
 (define (f64vector-same-length/c v1)
   (let ((n (f64vector-length v1)))

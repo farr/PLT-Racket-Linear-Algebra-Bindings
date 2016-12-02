@@ -18,16 +18,14 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 |#
 
-(require (lib "foreign.ss")
-         (lib "etc.ss")
+(require ffi/unsafe
+         scheme/foreign
          (except-in (lib "contract.ss") ->)
          (rename-in (lib "contract.ss") (-> ->/c))
          (except-in (lib "42ref.ss" "srfi") :)
-         (except-in (planet "srfi-4-comprehensions.ss" ("wmfarr" "srfi-4-comprehensions.plt")) :)
          "blas-lapack.ss"
          "vector.rkt"
-         racket/fixnum
-         racket/flonum)
+         racket/fixnum)
 
 (define (list/length/c n)
   (flat-named-contract
@@ -157,7 +155,7 @@
  (eigenvalues->vector
   (->/c f64vector? f64vector? (vectorof number?))))
 
-(unsafe!)
+
 
 (define-struct (exn:singular-matrix exn)
   (elt) #:transparent)
@@ -172,15 +170,15 @@
     ((rows cols elt)
      (let* ((m (my-make-matrix rows cols))
             (p (matrix-ptr m)))
-       (do-ec (:range i (* rows cols))
+       (for ([i (in-range (* rows cols))])
          (ptr-set! p _double* i elt))
        m))))
 
 (define (my-matrix i j . elts)
   (let* ((m (my-make-matrix i j))
          (p (matrix-ptr m)))
-    (do-ec (:parallel (:range k (* i j))
-                      (:list elt elts))
+    (for ([k (in-range (* i j))]
+          [elt (in-list elts)])
       (ptr-set! p _double* k elt))
     m))
 
@@ -442,10 +440,9 @@
                      ((_ptr i _int) = (matrix-rows m))
                      (b : _f64vector = (let ((nb (max (matrix-rows m) (matrix-cols m)))
                                              (nv (f64vector-length v)))
-                                         (f64vector-of-length-ec nb (:range i nb)
-                                                                 (if (< i nv)
-                                                                     (f64vector-ref v i)
-                                                                     0.0))))
+                                         (list->f64vector
+                                          (for/list ([i (in-range nb)])
+                                            (if (< i nv) (f64vector-ref v i) 0.0)))))
                      ((_ptr i _int) = (max (matrix-rows m) (matrix-cols m)))
                      (_f64vector o (min (matrix-rows m) (matrix-cols m)))
                      ((_ptr i _double) = -1.0)
@@ -455,8 +452,9 @@
                      (_u64vector o iwork)
                      (_ptr o _int) ->
                      _void ->
-                     (f64vector-of-length-ec (matrix-cols m) (:range i (matrix-cols m))
-                                             (f64vector-ref b i)))))
+                     (list->f64vector
+                      (for/list ([i (in-range (matrix-cols m))])
+                        (f64vector-ref b i))))))
 ;; Some sort of segfault---removed from the provided functions until fixed. 
 (define (matrix-solve-least-squares m b)
   (error 'matrix-solve-least-squares "there is a hard-to-find segfault in matrix-solve-least-squares; contact w-farr@northwestern.edu and ask him to track it down if you *really* need access to least-squares solvers")
@@ -469,7 +467,8 @@
 
 (define (matrix-identity n)
   (let ((m (my-make-matrix n n 0.0)))
-    (do-ec (:range i n) (matrix-set! m i i 1.0))
+    (for/list ([i (in-range n)])
+      (matrix-set! m i i 1.0))
     m))
 
 (define-syntax matrix-ec

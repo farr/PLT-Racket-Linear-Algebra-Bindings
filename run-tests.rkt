@@ -1,4 +1,4 @@
-#lang scheme
+#lang racket
 
 #| run-tests.ss: Run all tests for the plt-linalg package.
 Copyright (C) 2007 Will M. Farr
@@ -19,8 +19,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 |# 
 
-(require schemeunit 
-         schemeunit/text-ui
+(require rackunit 
+         rackunit/text-ui
          "matrix-test.ss" "vector-test.ss")
 
 (define all-tests (test-suite

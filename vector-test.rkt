@@ -1,4 +1,4 @@
-#lang scheme
+#lang racket
 
 #|  vector-test.ss: Test suite for vector.ss
     Copyright (C) 2007 Will M. Farr <farr@mit.edu>
@@ -18,10 +18,10 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 |#
 
-(require schemeunit
-         "vector.ss"
-         (lib "math.ss")
-         (planet "srfi-4-comprehensions.ss" ("wmfarr" "srfi-4-comprehensions.plt" 1)))
+(require rackunit
+         "vector.rkt"
+         (lib "math.rkt")
+         ffi/vector)
 
 (provide vector-test-suite)
 
@@ -38,8 +38,10 @@
                   (sqrt 30)))
    (test-case
     "f64vector-add, f64vector-sub, f64vector-scale"
-    (let ((v1 (f64vector-of-length-ec 10 (:range i 10) (random)))
-          (v2 (f64vector-of-length-ec 10 (:range i 10) (random))))
+    (let ((v1 (list->f64vector
+               (for/list ([i (in-range 10)]) (random))))
+          (v2 (list->f64vector
+               (for/list ([i (in-range 10)]) (random)))))
       (let ((x (f64vector-sub v1 v2))
             (y (f64vector-add v1 (f64vector-scale v2 -1))))
         (do ((i 0 (add1 i)))
@@ -47,5 +49,6 @@
           (check-close? 1e-10 (f64vector-ref x i) (f64vector-ref y i))))))
    (test-case
     "f64vector-dot"
-    (let ((v (f64vector-of-length-ec 10 (:range i 10) (random))))
+    (let ((v (list->f64vector
+              (for/list ([i (in-range 10)]) (random)))))
       (check-close? 1e-10 (f64vector-dot v v) (sqr (f64vector-norm v)))))))

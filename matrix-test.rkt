@@ -1,4 +1,4 @@
-#lang scheme
+#lang racket
 
 #| matrix-test.ss: Test suite for the matrix.ss module.
 Copyright (C) 2007 Will M. Farr
@@ -20,9 +20,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 |#
 
 
-(require schemeunit
+(require rackunit
          (lib "42ref.ss" "srfi")
-         (lib "4.ss" "srfi")
+         ffi/vector
          "matrix.ss")
 
 (define-simple-check (check-close? eps a b)
